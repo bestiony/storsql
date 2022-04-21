@@ -45,17 +45,30 @@ $_SESSION['filter'] = $filter;
 // use the filter
 if (isset($_GET['category'])|| isset($_GET['brand'])) {
     $cash = array();
+	
+		$optionCategory = isset($_GET['category'])? " category=".$_GET['category'] : "";
+		$optionBrand = isset($_GET['brand']) ? " brand=".$_GET['brand'] : "";
+		$seperator = count($filter) == 2 ? " AND " : "";
+	
+		$filterQuery = "SELECT id FROM products WHERE".$optionCategory.$seperator.$optionBrand;
+    $get = $db->query($filterQuery);
+		$result = array();
+		while ($output = $get->fetch_assoc()){
+			$result[] = $output;
+		}
 
-    
-    foreach ($products as $product) {
-        $matches = array();
-        foreach ($filter as $f_key => $f_value) {
-            $matches[] = strlen($filter[$f_key]) > 0 ? $filter[$f_key] == $product[$f_key] : true;
-        }
-        if (!in_array(false, $matches)) {
-            $cash[$product['id']] = $product;
-        }
-    }
+		foreach ($result as $id){
+			$cash[$id] = $products [$id];
+		}
+    // foreach ($products as $product) {
+    //     $matches = array();
+    //     foreach ($filter as $f_key => $f_value) {
+    //         $matches[] = strlen($filter[$f_key]) > 0 ? $filter[$f_key] == $product[$f_key] : true;
+    //     }
+    //     if (!in_array(false, $matches)) {
+    //         $cash[$product['id']] = $product;
+    //     }
+    // }
     $show = $cash;
 }
 
@@ -173,9 +186,10 @@ include "./snipets/html_head.php";
 
                     foreach ($categories as $name) {
                         $cashFilter = $_SESSION['filter'];
-                        $cashFilter['category'] = $name != $_GET['category'] ? $name : "";
+												$compare = isset($_GET['category'])? $_GET['category'] : "";
+                        $cashFilter['category'] = $name != $compare ? $name : "";
                         $query = http_build_query($cashFilter);
-                        $check = $name == $_GET['category'] ? "fa-check-square-o" : "fa-square-o";
+                        $check = $name == $compare ? "fa-check-square-o" : "fa-square-o";
                         $link =  "Products.php?$query";
                         echo "<a href='$link'><i class='fa $check'></i> " . str_replace("_", " ", $name) . "</a>";
                     }
@@ -187,9 +201,10 @@ include "./snipets/html_head.php";
                     <?php
                     foreach ($brands as $name) {
                         $cashFilter = $_SESSION['filter'];
-                        $cashFilter['brand'] = $name != $_GET['brand'] ? $name : "";
+												$compare = isset($_GET['brand'])? $_GET['brand'] : "";
+                        $cashFilter['brand'] = $name != $compare ? $name : "";
                         $query = http_build_query($cashFilter);
-                        $check = $name == $_GET['brand'] ? "fa-check-square-o" : "fa-square-o";
+                        $check = $name == $compare ? "fa-check-square-o" : "fa-square-o";
                         $link =  "Products.php?$query";
                         echo "<a href='$link'><i class='fa $check'></i> $name</a>";
                     }

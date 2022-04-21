@@ -8,7 +8,7 @@ include_once "./snipets/varriables.php";
 
 
 // $db->query("DROP TABLE products");
-// 	echo $db->error."<br>";
+	// echo $db->error."<br>";
 
 
 $db->query("CREATE TABLE IF NOT EXISTS products
