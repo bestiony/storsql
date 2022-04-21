@@ -16,6 +16,7 @@ if (empty($_GET)) {
     $_SESSION['show'] = $products;
     $show = $_SESSION['show'];
     $filter = array();
+    $_SESSION['currentSqlQuery'] = "";
 }
 
 
@@ -51,18 +52,14 @@ if (isset($_GET['category']) && !empty($_GET['category'])|| isset($_GET['brand']
 		$seperator = count($filter) == 2 ? " AND " : "";
 	
 		$filterQuery = "SELECT id FROM products WHERE".$optionCategory.$seperator.$optionBrand;
+        $_SESSION['currentSqlQuery'] = $filterQuery;
         $get = $db->query($filterQuery);
         echo $db->error;
-        // print_r($get->fetch_assoc());
 		$result = array();
 		while ($output = $get->fetch_assoc()){
-			$result[] = $output['id'];
+            $cash[$output['id']] = $products[$output['id']];
 		}
-        // echo "<pre>";
-        // print_r($result);
-		foreach ($result as $id){
-			$cash[$id] = $products[$id];
-		}
+    
     
     $show = $cash;
 }
@@ -74,7 +71,9 @@ if (isset($_GET['category']) && !empty($_GET['category'])|| isset($_GET['brand']
 if (isset($_GET['searchwords'])) {
     $searchResults = array();
     $searchword = $_GET['searchwords'];
-    $get = $db->query("SELECT * FROM products WHERE LOCATE('$searchword',description) OR LOCATE('$searchword',title) OR LOCATE('$searchword',ModelName) OR LOCATE('$searchword',brand)");
+    $searchQuery = "SELECT id FROM products WHERE LOCATE('$searchword',description) OR LOCATE('$searchword',title) OR LOCATE('$searchword',ModelName) OR LOCATE('$searchword',brand)";
+    $_SESSION['currentSqlQuery'] = $searchQuery ;
+    $get = $db->query($searchQuery);
     echo $db->error;
     while ($DATA = $get->fetch_assoc()){
         $searchResults[$DATA['id']]=$products[$DATA['id']];
@@ -87,15 +86,12 @@ if (isset($_GET['searchwords'])) {
 
 if (isset($_GET['sortby'])){
     $sortOption = $_GET['sortby'];
-
-    $sideSort = array();
-    foreach($show as $product){
-        $sideSort[$product['id']] = $product[$sortOption];
-    }
-    asort($sideSort);
-    $sortedCash = array();
-    foreach ($sideSort as $id => $optionValue){
-        $sortedCash[$id] = $show[$id];
+    $previous = strlen($_SESSION['currentSqlQuery']) > 0 ? $_SESSION['currentSqlQuery'] : "SELECT * FROM products";
+    $sortQuery = $previous." ORDER BY ".$sortOption;
+    $get = $db->query($sortQuery);
+    
+    while ($DATA = $get->fetch_assoc()){
+        $sortedCash[$DATA['id']] = $products[$DATA['id']];
     }
     $show = $sortedCash;
     $_SESSION['show'] = $show;
@@ -104,21 +100,7 @@ if (isset($_GET['sortby'])){
 
 // sort by Reverse
 
-if (isset($_GET['sortbyreverse'])){
-    $sortOption = $_GET['sortbyreverse'];
-
-    $sideSort = array();
-    foreach($show as $product){
-        $sideSort[$product['id']] = $product[$sortOption];
-    }
-    arsort($sideSort);
-    $sortedCash = array();
-    foreach ($sideSort as $id => $optionValue){
-        $sortedCash[$id] = $show[$id];
-    }
-    $show = $sortedCash;
-    $_SESSION['show'] = $show;
-}
+// not needed in this build. replaced with DESC using sql query
 
 
 
@@ -149,7 +131,7 @@ include "./snipets/html_head.php";
                     <option value="./Products.php?sortby=category&<?php echo http_build_query($_SESSION['filter']) ?>">category</option>
                     <option value="./Products.php?sortby=title&<?php echo http_build_query($_SESSION['filter']) ?>">name</option>
                     <option value="./Products.php?sortby=price&<?php echo http_build_query($_SESSION['filter']) ?>">price(low to high)</option>
-                    <option value="./Products.php?sortbyreverse=price&<?php echo http_build_query($_SESSION['filter']) ?>">price(high to low)</option>
+                    <option value="./Products.php?sortby=price DESC&<?php echo http_build_query($_SESSION['filter']) ?>">price(high to low)</option>
                     <option value="./Products.php?sortby=brand&<?php echo http_build_query($_SESSION['filter']) ?>">brand</option>
                     
                 </select>
