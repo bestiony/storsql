@@ -43,32 +43,27 @@ if (isset($_GET['category'])) {
 $_SESSION['filter'] = $filter;
 
 // use the filter
-if (isset($_GET['category'])|| isset($_GET['brand'])) {
+if (isset($_GET['category']) && !empty($_GET['category'])|| isset($_GET['brand'])&& !empty($_GET['brand']) ) {
     $cash = array();
 	
-		$optionCategory = isset($_GET['category'])? " category=".$_GET['category'] : "";
-		$optionBrand = isset($_GET['brand']) ? " brand=".$_GET['brand'] : "";
+		$optionCategory = isset($_GET['category'])? " category= '$_GET[category]'" : "";
+		$optionBrand = isset($_GET['brand']) ? " brand='$_GET[brand]'" : "";
 		$seperator = count($filter) == 2 ? " AND " : "";
 	
 		$filterQuery = "SELECT id FROM products WHERE".$optionCategory.$seperator.$optionBrand;
-    $get = $db->query($filterQuery);
+        $get = $db->query($filterQuery);
+        echo $db->error;
+        // print_r($get->fetch_assoc());
 		$result = array();
 		while ($output = $get->fetch_assoc()){
-			$result[] = $output;
+			$result[] = $output['id'];
 		}
-
+        // echo "<pre>";
+        // print_r($result);
 		foreach ($result as $id){
-			$cash[$id] = $products [$id];
+			$cash[$id] = $products[$id];
 		}
-    // foreach ($products as $product) {
-    //     $matches = array();
-    //     foreach ($filter as $f_key => $f_value) {
-    //         $matches[] = strlen($filter[$f_key]) > 0 ? $filter[$f_key] == $product[$f_key] : true;
-    //     }
-    //     if (!in_array(false, $matches)) {
-    //         $cash[$product['id']] = $product;
-    //     }
-    // }
+    
     $show = $cash;
 }
 

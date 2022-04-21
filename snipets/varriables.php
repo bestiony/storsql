@@ -2,11 +2,11 @@
 
 // ------------ database create ----------------
 //replit
-$db = new mysqli('127.0.0.1','bestiony','sthgood','store');
+// $db = new mysqli('127.0.0.1','bestiony','sthgood','store');
 // local
 // $db = new mysqli('mysql','root','');
 // $db->query("CREATE DATABASE IF NOT EXISTS store");
-// $db = new mysqli('mysql','root','','store');
+$db = new mysqli('mysql','root','','store');
 
 
 $products = $_SESSION['products'] ?? array();
