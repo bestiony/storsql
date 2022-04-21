@@ -73,14 +73,11 @@ if (isset($_GET['category']) && !empty($_GET['category'])|| isset($_GET['brand']
 // search 
 if (isset($_GET['searchwords'])) {
     $searchResults = array();
-    foreach ($products as $product) {
-        $id = $product['id'];
-        $matchName = stripos($product['ModelName'], $_GET['searchwords']) !== false;
-        $matchTitle = stripos($product['title'], $_GET['searchwords']) !== false;
-        $matchDescription = stripos($product['description'], $_GET['searchwords']) !== false;
-        if ($matchName || $matchDescription || $matchTitle) {
-            $searchResults[$id] = $product;
-        }
+    $searchword = $_GET['searchwords'];
+    $get = $db->query("SELECT * FROM products WHERE LOCATE('$searchword',description) OR LOCATE('$searchword',title) OR LOCATE('$searchword',ModelName) OR LOCATE('$searchword',brand)");
+    echo $db->error;
+    while ($DATA = $get->fetch_assoc()){
+        $searchResults[$DATA['id']]=$products[$DATA['id']];
     }
     $show = $searchResults;
     $search_history[] = $_GET['searchwords'];
