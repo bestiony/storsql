@@ -45,6 +45,8 @@ $_SESSION['filter'] = $filter;
 // use the filter
 if (isset($_GET['category'])|| isset($_GET['brand'])) {
     $cash = array();
+
+    
     foreach ($products as $product) {
         $matches = array();
         foreach ($filter as $f_key => $f_value) {

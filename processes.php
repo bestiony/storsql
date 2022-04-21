@@ -6,14 +6,30 @@ include_once "./snipets/varriables.php";
 
 
 
-//------------ first timers ------------------
 
-// -****--------DATA--------------**
-// fetch data
-if (!isset($_SESSION['products'])) {
+// $db->query("DROP TABLE products");
+// 	echo $db->error."<br>";
 
-		
-    $data = fopen("./data/storedata.csv", "r");
+
+$db->query("CREATE TABLE IF NOT EXISTS products
+            (
+            id int not null primary key auto_increment,
+            category varchar(255) not null,
+            top varchar(255) not null,
+            ModelName varchar(255) not null,
+            brand varchar(255) not null,
+            title varchar(255) not null,
+            price int not null,
+            color varchar(25),
+            description text(2000) not null,
+            photos text(2000) not null,
+            favorite int not null
+            );");
+echo $db->error; 
+$count = $db->query("SELECT * FROM products")->num_rows;
+
+if ($count == 0 ){
+    $data = fopen("./storedata.csv", "r");
 
     // store data
     $keys = fgetcsv($data);
@@ -26,6 +42,8 @@ if (!isset($_SESSION['products'])) {
     while (!feof($data)) {
         $details[] = fgetcsv($data);
     }
+    $_SESSION['details'] = $details;
+    $products = array();
 
     // make an array of arrays that have $keys values as their key
     foreach ($details as $index => $single_product) {
@@ -41,6 +59,53 @@ if (!isset($_SESSION['products'])) {
             $detail_index++;
         }
     }
+    $_SESSION['testcount'] = count($products);
+		foreach ($products as $product){
+			$id = $db->real_escape_string( $product['id'])+1;
+			$category = $db->real_escape_string( $product['category']);
+			$top = $db->real_escape_string( $product['top']);
+			$ModelName = $db->real_escape_string( $product['ModelName']);
+			$title = $db->real_escape_string( $product['title']);
+			$brand = $db->real_escape_string( $product['brand']);
+			$price = $db->real_escape_string( $product['price']);
+			$color = $db->real_escape_string( $product['color']);
+			$description = $db->real_escape_string( $product['description']);
+			$photos = $db->real_escape_string( json_encode($product['photos']));
+			$favorite = $db->real_escape_string( $product['favorite']);
+			$insert = "INSERT INTO products(
+			category,top,ModelName,
+			title,brand,price,color,description,
+			photos,favorite)
+			VALUES('".$category."', '".$top."', '".$ModelName."', 
+			'".$title."', '".$brand."',  ".$price.", '".$color."', 		
+			'".$description."','".$photos."', ".$favorite.");
+			";
+			$db->query($insert);
+			
+			
+		}
+}
+
+//------------ first timers ------------------
+
+// -****--------DATA--------------**
+// fetch data
+if (!isset($_SESSION['products'])) {
+    // ----------------database fetch -----------------
+    $products = array();
+    $get = $db->query("SELECT * FROM products");
+    $count = 0;
+    while ($DATA = $get->fetch_assoc()){
+        $cash = $DATA['photos'];
+        $DATA['photos'] = json_decode($cash, true);
+        $products[$DATA['id']] = $DATA;
+        $count++;
+    }
+    $_SESSION['repeatcount'] = $count;
+	// foreach($products as $product){
+    //     $cash = $product['photos'];
+    //     $product['photos'] = json_decode($cash,true);
+    // }	
     
 
     // ****----SESSION VARRIABLES -----**

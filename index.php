@@ -79,7 +79,7 @@ include "./snipets/html_head.php";
             // this is to randomize the process
             $chosen = array();
             for ($i = 0; $i < 4; $i++) {
-                $id = rand(0, 32);
+                $id = rand(1, 60);
                 $products[$id]['photos'][0];
                 // to avoid repetition 
                 if (empty($chosen)) {
@@ -125,7 +125,7 @@ include "./snipets/html_head.php";
                     <small>get the latest gaming keyboard and we'll through in a kickass gaming mouse with it's
                         extreemly comfortable mat </small>
                     <br>
-                    <a href="ProductDetails.php?id=17" class="btn">Buy Now</a>
+                    <a href="ProductDetails.php?id=18" class="btn">Buy Now</a>
                 </div>
             </div>
         </div>
