@@ -10,9 +10,9 @@ if (empty($products)) {
     include_once "./snipets/404.php";
     exit;
 }
-
+echo count($_GET);
 // if there is no query we must show all the products
-if (empty($_GET)) {
+if (count($_GET)==0) {
     $_SESSION['show'] = $products;
     $show = $_SESSION['show'];
     $filter = array();
@@ -70,6 +70,7 @@ if (isset($_GET['category']) && !empty($_GET['category'])|| isset($_GET['brand']
 // search 
 if (isset($_GET['searchwords'])) {
     $searchResults = array();
+    $thereIsSearch = true ;
     $searchword = $_GET['searchwords'];
     $searchQuery = "SELECT id FROM products WHERE LOCATE('$searchword',description) OR LOCATE('$searchword',title) OR LOCATE('$searchword',ModelName) OR LOCATE('$searchword',brand)";
     $_SESSION['currentSqlQuery'] = $searchQuery ;

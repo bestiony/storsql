@@ -77,12 +77,18 @@ function make_pages_buttons($pages)
             $currentPage = $_GET['page']?? 0;
             $previousPage = $currentPage == 0? $currentPage: $currentPage-1;
             $nextPage = $currentPage == $array_length-1 ? $currentPage : $currentPage +1;
-            echo "<a href='./Products.php?page=$previousPage'><span>&#8592;</span></a>";
+            $previousQuery = end($_SESSION['queryList']);
+            // if (count($_GET)== 0 && isset($_GET['page'])){
+                $pageLink = "./Products.php?page";
+            // } else {
+            //     $pageLink = $previousQuery."&page";
+            // }
+            echo "<a href='$pageLink=$previousPage'><span>&#8592;</span></a>";
             foreach ($pages as $key => $page) {
                 $style = $key == $currentPage? "style ='background: #6f40cf;color: #fff;'" :"" ;
-                echo "<a href='./Products.php?page=$key'><span $style>$key</span></a>";
+                echo "<a href='$pageLink=$key'><span $style>$key</span></a>";
             }
-            echo "<a href='./Products.php?page=$nextPage'><span>&#8594;</span></a>";
+            echo "<a href='$pageLink=$nextPage'><span>&#8594;</span></a>";
         }
     }
     echo "</div>";
