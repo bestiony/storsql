@@ -20,3 +20,5 @@ $_SESSION['filter'] = $filter ;
 $_SESSION['items_per_page'] = $items_per_page ;
 
 $_SESSION['search_history'] = $search_history ;
+
+$_SESSION['thereIsSearch'] = $thereIsSearch ;

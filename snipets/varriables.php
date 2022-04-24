@@ -30,3 +30,5 @@ $show = $_SESSION['show'] ?? $products;
 $items_per_page = $_SESSION['items_per_page']?? 12;
 
 $search_history = $_SESSION['search_history'] ?? array();
+
+$thereIsSearch = $_SESSION['thereIsSearch'] ?? false;
