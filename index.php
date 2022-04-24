@@ -57,9 +57,9 @@ include "./snipets/html_head.php";
                 // $category = str_replace("_"," ", $category);
                 echo " 
                     <div class='col-4'>
-                        <a style='display: inline-block;'   href='./Products.php?category=$category'>
-                            <img src='./images/$category.png'>
-                            <h4>" . str_replace("_", " ", $category) . "</h4>
+                        <a style='display: inline-block;'   href='./Products.php?category=".htmlspecialchars($category)."'>
+                            <img src='./images/".htmlspecialchars($category).".png'>
+                            <h4>" . htmlspecialchars(str_replace("_", " ", $category)) . "</h4>
                         </a>
                     </div>
                     

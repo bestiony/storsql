@@ -13,6 +13,9 @@ if (empty($products)) {
 // echo count($_GET);
 // if there is no query we must show all the products
 if (count($_GET)==0) {
+    $thereIsSearch = false; }
+
+if (!$thereIsSearch){
     $_SESSION['show'] = $products;
     $show = $_SESSION['show'];
     $filter = array();
@@ -36,10 +39,10 @@ if (count($_GET)==0) {
 
 // build filter
 if (isset($_GET['brand'])) {
-    $filter['brand'] = $_GET['brand'];
+    $filter['brand'] = $db->real_escape_string($_GET['brand']);
 }
 if (isset($_GET['category'])) {
-    $filter['category'] = $_GET['category'];
+    $filter['category'] = $db->real_escape_string($_GET['category']);
 }
 $_SESSION['filter'] = $filter;
 
@@ -47,8 +50,8 @@ $_SESSION['filter'] = $filter;
 if (isset($_GET['category']) && !empty($_GET['category'])|| isset($_GET['brand'])&& !empty($_GET['brand']) ) {
     $cash = array();
 	
-		$optionCategory = isset($_GET['category'])? " category= '$_GET[category]'" : "";
-		$optionBrand = isset($_GET['brand']) ? " brand='$_GET[brand]'" : "";
+		$optionCategory = isset($_GET['category'])? " category='".$db->real_escape_string($_GET['category'])."'" : "";
+		$optionBrand = isset($_GET['brand']) ? " brand='".$db->real_escape_string($_GET['brand'])."'" : "";
 		$seperator = count($filter) == 2 ? " AND " : "";
 	
 		$filterQuery = "SELECT id FROM products WHERE".$optionCategory.$seperator.$optionBrand;
@@ -71,7 +74,7 @@ if (isset($_GET['category']) && !empty($_GET['category'])|| isset($_GET['brand']
 if (isset($_GET['searchwords'])) {
     $searchResults = array();
     $thereIsSearch = true ;
-    $searchword = $_GET['searchwords'];
+    $searchword = $db->real_escape_string($_GET['searchwords']);
     $searchQuery = "SELECT id FROM products WHERE LOCATE('$searchword',description) OR LOCATE('$searchword',title) OR LOCATE('$searchword',ModelName) OR LOCATE('$searchword',brand)";
     $_SESSION['currentSqlQuery'] = $searchQuery ;
     $get = $db->query($searchQuery);
@@ -80,13 +83,13 @@ if (isset($_GET['searchwords'])) {
         $searchResults[$DATA['id']]=$products[$DATA['id']];
     }
     $show = $searchResults;
-    $search_history[] = $_GET['searchwords'];
+    $search_history[] = $searchword;
     $_SESSION['search_history'] = $search_history;
 }
 // sort by Normal
 
 if (isset($_GET['sortby'])){
-    $sortOption = $_GET['sortby'];
+    $sortOption =$db->real_escape_string($_GET['sortby']);
     $previous = strlen($_SESSION['currentSqlQuery']) > 0 ? $_SESSION['currentSqlQuery'] : "SELECT * FROM products";
     $sortQuery = $previous." ORDER BY ".$sortOption;
     $get = $db->query($sortQuery);
@@ -99,7 +102,7 @@ if (isset($_GET['sortby'])){
 }
 // items per page
 if (isset($_GET['items_per_page'])){
-    $items_per_page = $_GET['items_per_page'];
+    $items_per_page = $db->real_escape_string($_GET['items_per_page']);
     $_SESSION['items_per_page']= $items_per_page;
 }
 
@@ -133,7 +136,8 @@ include "./snipets/html_head.php";
             <div class="drop-down">
                 <span>items per page</span>
                 <select name="sortby" id="sortby" onchange="location = options[this.selectedIndex].value;">
-                    <option value="./Products.php?items_per_page=15&<?php echo http_build_query($_SESSION['filter']) ?>" ><?php echo $items_per_page; ?></option>
+                    <option style="background: #6f40cf;color: #fff;"><?php echo $items_per_page; ?></option>
+                    <option value="./Products.php?items_per_page=9&<?php echo http_build_query($_SESSION['filter']) ?>" >9</option>
                     <option value="./Products.php?items_per_page=12&<?php echo http_build_query($_SESSION['filter']) ?>" >12</option>
                     <option value="./Products.php?items_per_page=15&<?php echo http_build_query($_SESSION['filter']) ?>">15</option>
                     <option value="./Products.php?items_per_page=21&<?php echo http_build_query($_SESSION['filter']) ?>">21</option>
@@ -143,9 +147,9 @@ include "./snipets/html_head.php";
             <div class="drop-down">
                 <span>Sort by</span>
                 <select name="sortby" id="sortby" onchange="location = options[this.selectedIndex].value;">
-                    <option value="./Products.php?sortby=id&<?php echo http_build_query($_SESSION['filter']) ?>" selected>Default</option>
+                    <option style="background: #6f40cf;color: #fff;" ><?php echo $sortOption??"Default"; ?></option>
                     <option value="./Products.php?sortby=category&<?php echo http_build_query($_SESSION['filter']) ?>">category</option>
-                    <option value="./Products.php?sortby=title&<?php echo http_build_query($_SESSION['filter']) ?>">name</option>
+                    <option value="./Products.php?sortby=title&<?php echo http_build_query($_SESSION['filter']) ?>">title</option>
                     <option value="./Products.php?sortby=price&<?php echo http_build_query($_SESSION['filter']) ?>">price(low to high)</option>
                     <option value="./Products.php?sortby=price DESC&<?php echo http_build_query($_SESSION['filter']) ?>">price(high to low)</option>
                     <option value="./Products.php?sortby=brand&<?php echo http_build_query($_SESSION['filter']) ?>">brand</option>
@@ -177,7 +181,7 @@ include "./snipets/html_head.php";
 
                     foreach ($categories as $name) {
                         $cashFilter = $_SESSION['filter'];
-												$compare = isset($_GET['category'])? $_GET['category'] : "";
+						$compare = isset($_GET['category'])? $db->real_escape_string($_GET['category']) : "";
                         $cashFilter['category'] = $name != $compare ? $name : "";
                         $query = http_build_query($cashFilter);
                         $check = $name == $compare ? "fa-check-square-o" : "fa-square-o";
@@ -192,7 +196,7 @@ include "./snipets/html_head.php";
                     <?php
                     foreach ($brands as $name) {
                         $cashFilter = $_SESSION['filter'];
-												$compare = isset($_GET['brand'])? $_GET['brand'] : "";
+						$compare = isset($_GET['brand'])? $db->real_escape_string($_GET['brand']) : "";
                         $cashFilter['brand'] = $name != $compare ? $name : "";
                         $query = http_build_query($cashFilter);
                         $check = $name == $compare ? "fa-check-square-o" : "fa-square-o";
@@ -221,7 +225,7 @@ include "./snipets/html_head.php";
                     // refresh_page();
                 }
                 if (isset($_GET['page']) && $continue) {
-                    $page = $_GET['page'];
+                    $page = $db->real_escape_string($_GET['page']);
                     
                     foreach ($pages[$page] as $product) {
                         printProduct($product);

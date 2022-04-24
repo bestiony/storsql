@@ -30,21 +30,21 @@ if (isset($_GET['id'])){
 
                 foreach ($product['photos'] as $imageLink){
                     echo "<div class='small-img-row'>
-                    <img src='$imageLink' width='100%' class='small_img'>
+                    <img src='".htmlspecialchars($imageLink)."' width='100%' class='small_img'>
                 </div>";
                 }
             
                 ?>                    
                 </div>
-                <img src="<?php echo $product['photos'][0]; ?>" width="100%" id="big_img">
+                <img src="<?php echo htmlspecialchars($product['photos'][0]); ?>" width="100%" id="big_img">
             </div>
             <div class="col-2">
                 <?php 
                     echo "
-                    <p>".$product['top']."</p>
-                    <h1>".$product['title']."</h1>
+                    <p>".htmlspecialchars($product['top'])."</p>
+                    <h1>".htmlspecialchars($product['title'])."</h1>
                     <div class='price big-price'>
-                        <div class='upper'>$</div><span>".$product['price']."</span>
+                        <div class='upper'>$</div><span>".htmlspecialchars($product['price'])."</span>
                     </div>
                     ";
                 
@@ -56,7 +56,7 @@ if (isset($_GET['id'])){
                     <span>1 TB</span>
                 </div> -->
                 <form action="./microprocesses/cart_add_remove.php">
-                    <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($product['id']); ?>">
                     <input type="number" min="0" name="quantity" value="1" id="">
                     <button class="btn" type="submit" name="cart" value="add">Add to Cart</button>
                 </form>
@@ -66,35 +66,31 @@ if (isset($_GET['id'])){
                     <table>
                     <tr>
                             <td class="table-left-col">Model Name</td>
-                            <td class="table-right-col"><?php echo $product['ModelName'] ?></td>
+                            <td class="table-right-col"><?php echo htmlspecialchars($product['ModelName']) ?></td>
                         </tr> 
                         <tr>
                             <td class="table-left-col">Brand</td>
-                            <td class="table-right-col"><?php echo $product['brand'] ?></td>
+                            <td class="table-right-col"><?php echo htmlspecialchars($product['brand']) ?></td>
                         </tr>
                         <?php 
-                        if (strlen($product['color'])>1){
+                        if (!empty($product['color'])){
                             echo "
                             <tr>
-                            <td class='table-left-col'>Color</td>
-                            <td class='table-right-col'><?php echo ".$product['color']." ?></td>
-                        </tr> 
+                                <td class='table-left-col'>Color</td>
+                                <td class='table-right-col'><?php echo ".htmlspecialchars($product['color'])." ?></td>
+                            </tr> 
                             ";
                         }
                         ?>
                         <tr>
-                            <td class="table-left-col">Color</td>
-                            <td class="table-right-col"><?php echo $product['color'] ?></td>
-                        </tr> 
-                        <tr>
                             <td class="table-left-col">Category</td>
-                            <td class="table-right-col"><?php echo $product['category'] ?></td>
+                            <td class="table-right-col"><?php echo htmlspecialchars(str_replace("_", " ", $product['category'])) ?></td>
                         </tr> 
                     </table>
                 </div>
                 <br>
                 <h4>Description</h4>
-                <p><?php echo $product['description'] ?></p>
+                <p><?php echo htmlspecialchars($product['description']) ?></p>
             </div>
         </div>
 
@@ -105,7 +101,7 @@ if (isset($_GET['id'])){
     <div class="small-container" id="popular_products">
         <div class="row row-2">
         <h2>Related Products</h2>
-        <a href="./Products.php?category=<?php echo $product['category'];?>"><p>View More</p></a>
+        <a href="./Products.php?category=<?php echo htmlspecialchars($product['category']);?>"><p>View More</p></a>
         </div>
         <div class="row">
 

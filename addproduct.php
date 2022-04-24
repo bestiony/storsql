@@ -65,7 +65,6 @@ include "./snipets/html_head.php";
                         <input onblur="showphoto(url4,image4)" id="url4" type="url" name="photos[]"
                             placeholder="image 4 url" title="please use a valid img url" required>
                     </div>
-                    <input type="hidden" name="favorite" value="0">
                     <button type="submit" class="btn">Publish</button>
                 </form>
             </div>
