@@ -10,7 +10,7 @@ if (empty($products)) {
     include_once "./snipets/404.php";
     exit;
 }
-echo count($_GET);
+// echo count($_GET);
 // if there is no query we must show all the products
 if (count($_GET)==0) {
     $_SESSION['show'] = $products;
@@ -97,7 +97,11 @@ if (isset($_GET['sortby'])){
     $show = $sortedCash;
     $_SESSION['show'] = $show;
 }
-
+// items per page
+if (isset($_GET['items_per_page'])){
+    $items_per_page = $_GET['items_per_page'];
+    $_SESSION['items_per_page']= $items_per_page;
+}
 
 // sort by Reverse
 
@@ -108,7 +112,7 @@ if (isset($_GET['sortby'])){
 
 // make pages
 If (!empty($show)){
-    $pages = devide_into_pages($show);
+    $pages = devide_into_pages($show,$items_per_page);
 }
 
 include "./snipets/html_head.php";
@@ -125,6 +129,17 @@ include "./snipets/html_head.php";
     <div class="small-container">
         <div class="row row-2">
             <h2>All Products</h2>
+            <div class="drop-down-container"> 
+            <div class="drop-down">
+                <span>items per page</span>
+                <select name="sortby" id="sortby" onchange="location = options[this.selectedIndex].value;">
+                    <option value="./Products.php?items_per_page=15&<?php echo http_build_query($_SESSION['filter']) ?>" ><?php echo $items_per_page; ?></option>
+                    <option value="./Products.php?items_per_page=12&<?php echo http_build_query($_SESSION['filter']) ?>" >12</option>
+                    <option value="./Products.php?items_per_page=15&<?php echo http_build_query($_SESSION['filter']) ?>">15</option>
+                    <option value="./Products.php?items_per_page=21&<?php echo http_build_query($_SESSION['filter']) ?>">21</option>
+                    <option value="./Products.php?items_per_page=30&<?php echo http_build_query($_SESSION['filter']) ?>">30</option>
+                </select>
+            </div>
             <div class="drop-down">
                 <span>Sort by</span>
                 <select name="sortby" id="sortby" onchange="location = options[this.selectedIndex].value;">
@@ -136,6 +151,7 @@ include "./snipets/html_head.php";
                     <option value="./Products.php?sortby=brand&<?php echo http_build_query($_SESSION['filter']) ?>">brand</option>
                     
                 </select>
+            </div>
             </div>
             <?php 
                 if (!empty($show)){

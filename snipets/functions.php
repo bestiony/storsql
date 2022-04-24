@@ -53,16 +53,16 @@ function printProduct($product)
 }
 
 
-function devide_into_pages($list)
+function devide_into_pages($list, $items_per_page)
 {
-    $items_per_page = $_SESSION['items_per_page'];
+    // $items_per_page = $_SESSION['items_per_page'];
     $array_length = count($list);
     $page_index = 0;
     $start = 0;
     $pages = array();
     while ($start < $array_length) {
         $pages[$page_index] = array_slice($list, $start, $items_per_page);
-        $start += 15;
+        $start += $items_per_page;
         $page_index++;
     }
     return $pages;
