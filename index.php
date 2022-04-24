@@ -30,19 +30,32 @@ include "./snipets/html_head.php";
     <div class="slideshow container">
         <div class="row">
             <div class="col-2">
+                <?php
+                $lastRecord = $_SESSION['last_record'] ?? count($products);
+                $lastProduct = $products[$lastRecord];
+
+                
+                
+                ?>
                 <h1>
-                    Your Ultimate<br />
-                    Gaming Pc <br />Awaits!
+                    <!-- Your Ultimate<br />
+                    Gaming Pc <br />Awaits! -->
+                    <?php
+                        echo htmlspecialchars($lastProduct['ModelName']);
+                    ?>
                 </h1>
                 <p>
-                    Check out our amazing offers and level up your gaming experience
-                    with latest hardwar technology has to to offer
+                    <?php
+                        echo htmlspecialchars($lastProduct['title']);
+                    ?>
+                    <!-- Check out our amazing offers and level up your gaming experience
+                    with latest hardwar technology has to to offer -->
                 </p>
-                <a href="./Products.php" class="btn">Let's Play <i class="fa fa-long-arrow-right"></i>
+                <a href="./ProductDetails.php?id=<?php echo $lastRecord ?>" class="btn">Discover<i class="fa fa-long-arrow-right"></i>
                 </a>
             </div>
             <div class="col-2">
-                <img src="./images/case.png" alt="" />
+                <img style="mix-blend-mode: multiply;" src="<?php echo htmlspecialchars($lastProduct['photos'][0]) ?>" alt="" />
             </div>
         </div>
     </div>

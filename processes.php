@@ -132,8 +132,12 @@ if (!isset($_SESSION['products'])) {
         asort($brands);
         // -------- make prices 
         $prices[$id] = $product['price'];
+        sort($prices);
         
     }
+    $min = htmlspecialchars($prices[0]);
+    $max = htmlspecialchars(end($prices));
+    $priceRanges = [[$min, 99],[100,499],[500,999],[1000, $max]];
 }
 
 

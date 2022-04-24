@@ -3,12 +3,12 @@ include_once "../snipets/varriables.php";
 
 
 if (empty($_GET)) {
-    echo "empty GEt";
+    echo "empty GET";
     include "./404.php";
     exit;
 }
 $newProduct = $_GET ?? array();
-if (count($newProduct) < 10) {
+if (count($newProduct) < 9) {
     echo "missing items";
     include "./404.php";
     exit;
@@ -42,6 +42,7 @@ $insert = "INSERT INTO products(
 			'" . $description . "','" . $photos . "', " . $favorite . ");
 			";
 $db->query($insert);
+$_SESSION['last_record'] = $db->insert_id;
 unset($_SESSION['products']);
 
 $products = array();
